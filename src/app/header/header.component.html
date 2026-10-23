@@ -1,0 +1,29 @@
+<header class="header bg-dark">
+    <div class="brand">
+        <h1>eStore</h1>
+    </div>
+    <form class="search-form" role="search">
+        <select class="dropdown p-0 m-0" aria-label="Search category">
+            <option>Men</option>
+            <option>Women</option>
+            <option>Kids</option>
+        </select>
+        <input class="form-control search-box" type="search" placeholder="Search..." aria-label="Search" />
+        <button class="search-button" type="submit"><fa-icon [icon]="faMagnifyingGlass"></fa-icon></button>
+    </form>
+    <div class="login-container p-0">
+        <fa-icon class="user-icon" [icon]="faUserCircle"></fa-icon>
+        <h5><a href="#">Sign in</a></h5> / <h5><a href="#">Register</a></h5>
+    </div>
+    <div class="cart-wishlist">
+        <ul class="p-0">
+            <li class="list-item">
+                <fa-icon [icon]="faHeart"></fa-icon>
+            </li>
+            <li class="list-item">
+                <fa-icon [icon]="faCartShopping"></fa-icon>
+            </li>
+        </ul>
+    </div>
+
+</header>
