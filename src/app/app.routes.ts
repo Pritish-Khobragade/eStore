@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
-import { NotfoundComponent } from './notfound/notfound.component';
-import { CatnavigationComponent } from './catnavigation/catnavigation.component';
+import { NotfoundComponent } from './home/notfound/notfound.component';
+import { CatnavigationComponent } from './home/components/catnavigation/catnavigation.component';
 import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
