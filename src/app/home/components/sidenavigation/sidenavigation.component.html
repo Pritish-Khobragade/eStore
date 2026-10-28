@@ -3,10 +3,6 @@
         <h3>Category</h3>
     </div>
 
-    @if (categoryLoadError) {
-        <p role="alert">Unable to load categories. Please try again later.</p>
-    }
-
     <div class="accordion">
         <div *ngFor="let mainCategory of getCategories(); let i = index" class="accordion-item individual-category">
             <div class="accordion-header">

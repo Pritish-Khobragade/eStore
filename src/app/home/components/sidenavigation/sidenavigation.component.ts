@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { NgForOf } from '@angular/common';
-import { CategoryService } from './../../services/category.service';
+import { Subscription } from 'rxjs';
 import { Category } from '../../types/category.type';
+import { CategoryStoreItem } from '../../services/categories.storeItem';
 
 @Component({
   selector: 'app-sidenavigation',
@@ -10,20 +11,27 @@ import { Category } from '../../types/category.type';
   templateUrl: './sidenavigation.component.html',
   styleUrl: './sidenavigation.component.scss'
 })
-export class SidenavigationComponent {
+export class SidenavigationComponent implements OnDestroy {
   Categories: Category[] = [];
-  categoryLoadError = false;
+  Subscription: Subscription = new Subscription();
 
-  constructor(private categoryService: CategoryService) {
-    categoryService.getAllCategories().subscribe((Categories) => {
-      this.Categories = Categories;
-    }, () => {
-      this.categoryLoadError = true;
-    })
+  constructor(private categoryStore: CategoryStoreItem) {
+    this.Subscription = categoryStore.Categories$.subscribe(categories => {
+      this.Categories = categories;
+    });
   }
 
-  getCategories(parentCategoryId?: number): Category[] {
-    return this.Categories.filter(category => parentCategoryId ? category.parent_category_id === parentCategoryId :
-      category.parent_category_id === null)
+  getCategories(parentCategoryId?: number | null): Category[] {
+    return this.Categories.filter(category => {
+      if (parentCategoryId === undefined || parentCategoryId === null) {
+        return category.parent_category_id === null || category.parent_category_id === undefined;
+      }
+
+      return category.parent_category_id === parentCategoryId;
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.Subscription.unsubscribe();
   }
 }

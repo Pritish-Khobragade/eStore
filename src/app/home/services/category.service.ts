@@ -3,9 +3,7 @@ import { Injectable } from '@angular/core';
 import { Category } from '../types/category.type';
 import { Observable } from 'rxjs';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable()
 export class CategoryService {
 
   constructor(private HttpClient: HttpClient) { }
