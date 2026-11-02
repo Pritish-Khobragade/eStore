@@ -3,8 +3,10 @@ import { HeaderComponent } from './components/header/header.component';
 import { CatnavigationComponent } from './components/catnavigation/catnavigation.component';
 import { SidenavigationComponent } from './components/sidenavigation/sidenavigation.component';
 import { ProductsComponent } from './components/products/products.component';
-import { CategoryService } from './services/category.service';
-import { CategoryStoreItem } from './services/categories.storeItem';
+import { CategoryService } from './services/category/category.service';
+import { CategoryStoreItem } from './services/category/categories.storeItem';
+import { ProductsStoreItem } from './services/product/products.storeItem';
+import { ProductsService } from './services/product/products.service';
 
 
 
@@ -12,12 +14,17 @@ import { CategoryStoreItem } from './services/categories.storeItem';
   selector: 'app-home',
   standalone: true,
   imports: [HeaderComponent, CatnavigationComponent, SidenavigationComponent, ProductsComponent],
-  providers: [CategoryService,CategoryStoreItem],
+  providers: [CategoryService,CategoryStoreItem, ProductsService, ProductsStoreItem],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  constructor(private categoriesStoreItem: CategoryStoreItem) {
+  constructor(private categoriesStoreItem: CategoryStoreItem, private productStoreItem: ProductsStoreItem) {
     this.categoriesStoreItem.loadCategories();
+    this.productStoreItem.loadProducts();
+  }
+
+  onSelectSubCategory(subCategoryId: number): void {
+    this.productStoreItem.loadProducts('subcategoryid=' + subCategoryId);
   }
 }

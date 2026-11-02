@@ -1,4 +1,4 @@
-import { CategoryStoreItem } from './../../services/categories.storeItem';
+import { CategoryStoreItem } from '../../services/category/categories.storeItem';
 import { AsyncPipe, NgForOf } from '@angular/common';
 import { Component } from '@angular/core';
 

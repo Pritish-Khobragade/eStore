@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, map } from 'rxjs';
-import { StoreItem } from '../../shared/storeItems';
-import { Category } from '../types/category.type';
+import { StoreItem } from '../../../shared/storeItems';
+import { Category } from '../../types/category.type';
 import { CategoryService } from './category.service';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { CategoryStoreItem } from './../../services/categories.storeItem';
+import { CategoryStoreItem } from '../../services/category/categories.storeItem';
 import { Component } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {

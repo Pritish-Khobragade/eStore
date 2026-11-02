@@ -1,8 +1,8 @@
-import { Component, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, OnDestroy, Output } from '@angular/core';
 import { NgForOf } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { Category } from '../../types/category.type';
-import { CategoryStoreItem } from '../../services/categories.storeItem';
+import { CategoryStoreItem } from '../../services/category/categories.storeItem';
 
 @Component({
   selector: 'app-sidenavigation',
@@ -12,6 +12,9 @@ import { CategoryStoreItem } from '../../services/categories.storeItem';
   styleUrl: './sidenavigation.component.scss'
 })
 export class SidenavigationComponent implements OnDestroy {
+  @Output()
+  subCategoryClicked: EventEmitter<number> = new EventEmitter<number>();
+  subCategorys: Category[] = [];
   Categories: Category[] = [];
   Subscription: Subscription = new Subscription();
 
@@ -29,6 +32,10 @@ export class SidenavigationComponent implements OnDestroy {
 
       return category.parent_category_id === parentCategoryId;
     });
+  }
+
+  onSubCategoryClicked(subCategory: Category): void {
+    this.subCategoryClicked.emit(subCategory.id);
   }
 
   ngOnDestroy(): void {

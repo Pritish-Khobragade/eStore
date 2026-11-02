@@ -28,6 +28,8 @@
             a {
                 text-decoration: none;
                 color: black;
+                cursor: pointer;
+                @include underline-transition(0.5);
             }
         }
     }
