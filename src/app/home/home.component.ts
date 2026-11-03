@@ -27,4 +27,16 @@ export class HomeComponent {
   onSelectSubCategory(subCategoryId: number): void {
     this.productStoreItem.loadProducts('subcategoryid=' + subCategoryId);
   }
+
+  onSelectProductFor(productFor: string | null): void {
+    if (productFor === null) {
+      this.productStoreItem.loadProducts();
+      return;
+    }
+
+    this.productStoreItem.loadProducts(
+      'productFor=' + encodeURIComponent(productFor)
+    );
+  }
+
 }
