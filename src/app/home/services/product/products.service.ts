@@ -9,7 +9,7 @@ export class ProductsService {
   constructor(private HttpClient: HttpClient) { }
 
   getAllProducts(query?: string): Observable<Product[]> {
-    let url = 'http://localhost:5001/products';
+    let url : string = 'http://localhost:5001/products';
     if(query) {
       url += '?' + query;
     }
