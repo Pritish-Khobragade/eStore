@@ -1,5 +1,5 @@
 import { CategoryStoreItem } from '../../services/category/categories.storeItem';
-import { Component , EventEmitter,Output } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faCartShopping,
@@ -22,9 +22,17 @@ export class HeaderComponent {
   readonly faUserCircle = faUserCircle;
   readonly faCartShopping = faCartShopping;
 
-  seartchClicked: EventEmitter<SearchKeyword> = new EventEmitter<SearchKeyword>();
-  constructor(public categoryStore: CategoryStoreItem){
+  @Output()
+  searchClicked = new EventEmitter<SearchKeywordType>();
 
+  constructor(public categoryStore: CategoryStoreItem) {}
+
+  onClickSearch(event: SubmitEvent, keyword: string, categoryId: string): void {
+    event.preventDefault();
+    const parsedCategoryId = Number(categoryId);
+    this.searchClicked.emit({
+      keyword: keyword.trim(),
+      categoryId: categoryId && Number.isInteger(parsedCategoryId) ? parsedCategoryId : null
+    });
   }
-
 }
