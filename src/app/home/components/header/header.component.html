@@ -3,11 +3,11 @@
         <h1>eStore</h1>
     </div>
     <form class="search-form" role="search">
-        <select class="dropdown p-0 m-0" aria-label="Search category">
-            <option *ngFor="let category of categoryStore.topLevelCategories$ | async">{{ category.category }}</option>
+        <select #categoryOptions class="dropdown p-0 m-0" aria-label="Search category">
+            <option *ngFor="let category of categoryStore.topLevelCategories$ | async" [value]="category.id">{{ category.category }}</option>
         </select>
-        <input class="form-control search-box" type="search" placeholder="Search..." aria-label="Search" />
-        <button class="search-button" type="submit"><fa-icon [icon]="faMagnifyingGlass"></fa-icon></button>
+        <input #keyword class="form-control search-box" type="search" placeholder="Search..." aria-label="Search" />
+        <button class="search-button" type="submit" (click)="onClickSearch(keyword.value, categoryOptions.value)"><fa-icon [icon]="faMagnifyingGlass"></fa-icon></button>
     </form>
     <div class="login-container p-0">
         <fa-icon class="user-icon" [icon]="faUserCircle"></fa-icon>
