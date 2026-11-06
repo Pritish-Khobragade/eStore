@@ -1,12 +1,23 @@
 import { Routes } from '@angular/router';
-import { NotfoundComponent } from './home/notfound/notfound.component';
-import { CatnavigationComponent } from './home/components/catnavigation/catnavigation.component';
-import { HomeComponent } from './home/home.component';
 
 export const routes: Routes = [
-  { path: 'home', component: HomeComponent },
-  { path: 'not-found', component: NotfoundComponent },
-  { path: 'catnavigation', component: CatnavigationComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' },
+  {
+    path: 'home',
+    loadComponent: () => import('./home/home.component').then((c) => c.HomeComponent),
+  },
+  {
+    path: 'not-found',
+    loadComponent: () =>
+      import('./home/notfound/notfound.component').then((c) => c.NotfoundComponent),
+  },
+  {
+    path: 'catnavigation',
+    loadComponent: () => import('./home/components/catnavigation/catnavigation.component').then((c) => c.CatnavigationComponent),
+  },
+  {
+    path: '',
+    redirectTo: 'home',
+    pathMatch: 'full',
+  },
   { path: '**', redirectTo: 'not-found' },
 ];
