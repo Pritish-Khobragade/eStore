@@ -1,21 +1,27 @@
-@if (product$ | async; as product) {
-    <div class="row my-5 product-details-container">
-        <div class="col-5 product-image-container">
-            <img [src]="product.product_img" [alt]="product.product_name">
-        </div>
-        <div class="col-7 product-information-container">
-            <span id="product-name">{{ product.product_name }}</span>
-            <app-ratings [score]="product.ratings"></app-ratings>
-            <hr>
-            <div class="product-price">
-                Price: <span class="price">{{ product.price | currency }}</span>
-                <div>Inclusive of all taxes.</div>
-            </div>
-            <div class="product-description">
-                <p>{{ product.product_description }}</p>
-            </div>
-        </div>
+<ng-container *ngIf="product$ | async as product; else productNotFound">
+  <div class="row my-5 product-details-container">
+    <div class="col-5 product-image-container">
+      <img [src]="product.product_img" [alt]="product.product_name">
     </div>
-} @else {
-    <p class="my-5">Product not found.</p>
-}
+    <div class="col-7 product-information-container">
+      <span id="product-name">{{ product.product_name }}</span>
+      <app-ratings [score]="product.ratings"></app-ratings>
+      <hr>
+      <div class="product-price">
+        Price: <span class="price">{{ product.price | currency }}</span>
+        <div>Inclusive of all taxes.</div>
+      </div>
+      <div class="product-description">
+        <p>{{ product.product_description }}</p>
+      </div>
+      <button type="button" class="cart-button" (click)="addToCart(product)">
+        <fa-icon [icon]="faShoppingCart"></fa-icon>
+        <span>Add to Cart</span>
+      </button>
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #productNotFound>
+  <p class="my-5">Product not found.</p>
+</ng-template>
