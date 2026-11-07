@@ -4,6 +4,20 @@ export const routes: Routes = [
   {
     path: 'home',
     loadComponent: () => import('./home/home.component').then((c) => c.HomeComponent),
+    children: [
+      { path: '', redirectTo: 'products', pathMatch: 'full' },
+      {
+        path: 'products',
+        loadComponent: () => import('./home/components/products/products.component').then((c) => c.ProductsComponent),
+      },
+      {
+        path: 'products/:id',
+        loadComponent: () =>
+          import('./home/components/productdetails/productdetails.component').then(
+            (c) => c.ProductdetailsComponent,
+          ),
+      },
+    ],
   },
   {
     path: 'not-found',

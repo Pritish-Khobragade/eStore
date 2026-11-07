@@ -1,26 +1,37 @@
 import { Component } from '@angular/core';
+import { AsyncPipe } from '@angular/common';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter, map, Observable, startWith } from 'rxjs';
 import { HeaderComponent } from './components/header/header.component';
 import { CatnavigationComponent } from './components/catnavigation/catnavigation.component';
 import { SidenavigationComponent } from './components/sidenavigation/sidenavigation.component';
-import { ProductsComponent } from './components/products/products.component';
 import { CategoryService } from './services/category/category.service';
 import { CategoryStoreItem } from './services/category/categories.storeItem';
 import { ProductsStoreItem } from './services/product/products.storeItem';
 import { ProductsService } from './services/product/products.service';
 import { SearchKeywordType } from './types/searchKeywordtype';
 
-
-
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [HeaderComponent, CatnavigationComponent, SidenavigationComponent, ProductsComponent],
+  imports: [AsyncPipe, HeaderComponent, CatnavigationComponent, SidenavigationComponent, RouterOutlet],
   providers: [CategoryService, CategoryStoreItem, ProductsService, ProductsStoreItem],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  constructor(private categoriesStoreItem: CategoryStoreItem, private productStoreItem: ProductsStoreItem) {
+  readonly hideCategorySidebar$: Observable<boolean>;
+
+  constructor(
+    private categoriesStoreItem: CategoryStoreItem,
+    private productStoreItem: ProductsStoreItem,
+    private router: Router,
+  ) {
+    this.hideCategorySidebar$ = this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd),
+      startWith(null),
+      map(() => /^\/home\/products\/[^/?#]+/.test(this.router.url)),
+    );
     this.categoriesStoreItem.loadCategories();
     this.productStoreItem.loadProducts();
   }

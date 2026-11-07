@@ -3,17 +3,18 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
   faCartShopping,
-  faHeart,
   faMagnifyingGlass,
   faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
-import { AsyncPipe, NgForOf } from '@angular/common';
+import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { SearchKeywordType } from '../../types/searchKeywordtype';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [FontAwesomeModule, NgForOf, AsyncPipe],
+  imports: [FontAwesomeModule, NgForOf, NgIf, AsyncPipe],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -25,7 +26,16 @@ export class HeaderComponent {
   @Output()
   searchClicked = new EventEmitter<SearchKeywordType>();
 
-  constructor(public categoryStore: CategoryStoreItem) {}
+  displaySearch: boolean;
+
+  constructor(public categoryStore: CategoryStoreItem, private router: Router) {
+    this.displaySearch = router.url === '/home/products';
+    router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe((event) => {
+      this.displaySearch = event.urlAfterRedirects === '/home/products';
+    });
+  }
 
   onClickSearch(event: SubmitEvent, keyword: string, categoryId: string): void {
     event.preventDefault();

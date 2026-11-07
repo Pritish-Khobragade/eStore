@@ -16,5 +16,5 @@ import { ProductsService } from './services/product/products.service';
   exports: [
     HomeComponent
   ]
-})
+}) 
 export class HomeModule { }
