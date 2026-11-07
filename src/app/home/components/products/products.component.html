@@ -1,14 +1,18 @@
 <div class="main-product-container">
-    <a *ngFor="let product of productStoreItem.products | async" [routerLink]="['/home/products', product.id]"
-        class="mx-5 p-3 product-card">
-        <div class="product-image-container">
-            <img [src]="product.product_img"
-                [alt]="product.product_name" class="img-fluid">
-        </div>
-        <div class="product-info">
-            <h5>{{ product.product_name }}</h5>
-            <p class="product-price">{{ product.price | currency }}</p>
-            <app-ratings [score]="product.ratings"></app-ratings>
-        </div>
-    </a>
+    <article *ngFor="let product of productStoreItem.products | async" class="mx-5 p-3 product-card">
+        <a [routerLink]="['/home/products', product.id]" class="product-link">
+            <div class="product-image-container">
+                <img [src]="product.product_img" [alt]="product.product_name" class="img-fluid">
+            </div>
+            <div class="product-info">
+                <h5>{{ product.product_name }}</h5>
+                <p class="product-price">{{ product.price | currency }}</p>
+                <app-ratings [score]="product.ratings"></app-ratings>
+            </div>
+        </a>
+        <button type="button" class="cart-button" (click)="addToCart(product)">
+            <fa-icon [icon]="faShoppingCart"></fa-icon>
+            <span>Add to Cart</span>
+        </button>
+    </article>
 </div>

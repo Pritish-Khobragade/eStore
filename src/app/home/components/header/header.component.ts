@@ -10,6 +10,7 @@ import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { SearchKeywordType } from '../../types/searchKeywordtype';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
+import { CartStoreItem } from '../../services/cart/cart.storeItem';
 
 @Component({
   selector: 'app-header',
@@ -28,7 +29,7 @@ export class HeaderComponent {
 
   displaySearch: boolean;
 
-  constructor(public categoryStore: CategoryStoreItem, private router: Router) {
+  constructor(public categoryStore: CategoryStoreItem, private router: Router,public cartStore: CartStoreItem) {
     this.displaySearch = router.url === '/home/products';
     router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
