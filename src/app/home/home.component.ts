@@ -31,7 +31,7 @@ export class HomeComponent {
     this.hideCategorySidebar$ = this.router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd),
       startWith(null),
-      map(() => /^\/home\/products\/[^/?#]+/.test(this.router.url)),
+      map(() => /^\/home\/(?:products\/[^/?#]+|cart)(?:[/?#]|$)/.test(this.router.url)),
     );
     this.categoriesStoreItem.loadCategories();
     this.productStoreItem.loadProducts();

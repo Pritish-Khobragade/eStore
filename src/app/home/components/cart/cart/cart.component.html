@@ -1,31 +1,57 @@
 <section class="cart-page">
-  <h2 class="cart-title">Your Cart</h2>
-
   <ng-container *ngIf="cart$ | async as cart">
-    <p *ngIf="cart.products.length === 0" class="empty-cart">Your cart is empty.</p>
+    <div *ngIf="cart.products.length === 0; else cartContents" class="empty-cart">
+      <h1>The Cart Is Empty</h1>
+      <hr />
+      <a class="continue-shopping" [routerLink]="['/home/products']">Continue Shopping</a>
+    </div>
 
-    <article *ngFor="let item of cart.products" class="cart-item">
-      <img
-        class="cart-item-image"
-        [src]="item.product.product_img"
-        [alt]="item.product.product_name"
-      />
+    <ng-template #cartContents>
+      <div class="cart-layout">
+        <div class="cart-items">
+          <article *ngFor="let item of cart.products" class="cart-item">
+            <img
+              class="cart-item-image"
+              [src]="item.product.product_img"
+              [alt]="item.product.product_name"
+            />
 
-      <div class="cart-item-details">
-        <h3 class="cart-item-name">{{ item.product.product_name }}</h3>
-        <app-ratings [score]="item.product.ratings"></app-ratings>
+            <div class="cart-item-details">
+              <h3 class="cart-item-name">{{ item.product.product_name }}</h3>
+              <app-ratings [score]="item.product.ratings"></app-ratings>
 
-        <div class="cart-item-actions">
-          <div class="quantity-control" [attr.aria-label]="'Quantity: ' + item.quantity">
-            <button type="button" aria-label="Decrease quantity" (click)="updateQuantity('-', item)">-</button>
-            <span>{{ item.quantity }}</span>
-            <button type="button" aria-label="Increase quantity" (click)="updateQuantity('+', item)">+</button>
-          </div>
-          <button type="button" class="remove-button" (click)="removeItem(item)">Remove Item</button>
+              <div class="cart-item-actions">
+                <div class="quantity-control" [attr.aria-label]="'Quantity: ' + item.quantity">
+                  <button type="button" aria-label="Decrease quantity" (click)="updateQuantity('-', item)">-</button>
+                  <span>{{ item.quantity }}</span>
+                  <button type="button" aria-label="Increase quantity" (click)="updateQuantity('+', item)">+</button>
+                </div>
+                <button type="button" class="remove-button" (click)="removeItem(item)">Remove Item</button>
+              </div>
+            </div>
+
+            <p class="cart-item-price">{{ item.amount | currency }}</p>
+          </article>
         </div>
-      </div>
 
-      <p class="cart-item-price">{{ item.amount | currency }}</p>
-    </article>
+        <aside class="cart-summary" aria-label="Order summary">
+          <h3>Summary</h3>
+          <div class="summary-row">
+            <span>Cart Total</span>
+            <span>{{ cart.totalAmount | currency }}</span>
+          </div>
+          <div class="summary-row">
+            <span>Shipping Charges</span>
+            <span>Free</span>
+          </div>
+          <hr />
+          <div class="summary-row summary-total">
+            <span>Total</span>
+            <span>{{ cart.totalAmount | currency }}</span>
+          </div>
+          <button type="button" class="checkout-button">Checkout</button>
+        </aside>
+      </div>
+    </ng-template>
   </ng-container>
 </section>

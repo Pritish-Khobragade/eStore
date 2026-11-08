@@ -15,7 +15,8 @@ describe('CartStoreItem', () => {
   };
 
   beforeEach(() => {
-    cartStore = new CartStoreItem();
+    sessionStorage.removeItem('cart');
+    cartStore = new CartStoreItem('browser');
   });
 
   it('increments quantity and amount when adding an existing product', () => {
