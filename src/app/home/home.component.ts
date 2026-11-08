@@ -9,14 +9,13 @@ import { CategoryService } from './services/category/category.service';
 import { CategoryStoreItem } from './services/category/categories.storeItem';
 import { ProductsStoreItem } from './services/product/products.storeItem';
 import { ProductsService } from './services/product/products.service';
-import { CartStoreItem } from './services/cart/cart.storeItem';
 import { SearchKeywordType } from './types/searchKeywordtype';
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [AsyncPipe, HeaderComponent, CatnavigationComponent, SidenavigationComponent, RouterOutlet],
-  providers: [CategoryService, CategoryStoreItem, ProductsService, ProductsStoreItem, CartStoreItem],
+  providers: [CategoryService, CategoryStoreItem, ProductsService, ProductsStoreItem],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
