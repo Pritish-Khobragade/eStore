@@ -17,6 +17,13 @@ export const routes: Routes = [
             (c) => c.ProductdetailsComponent,
           ),
       },
+      {
+        path: 'cart',
+        loadComponent: () =>
+          import('./home/components/cart/cart/cart.component').then(
+            (c) => c.CartComponent,
+          ),
+      },
     ],
   },
   {

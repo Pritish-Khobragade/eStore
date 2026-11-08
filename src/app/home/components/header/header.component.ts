@@ -8,14 +8,14 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
 import { SearchKeywordType } from '../../types/searchKeywordtype';
-import { NavigationEnd, Router } from '@angular/router';
+import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter } from 'rxjs';
 import { CartStoreItem } from '../../services/cart/cart.storeItem';
 
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [FontAwesomeModule, NgForOf, NgIf, AsyncPipe],
+  imports: [FontAwesomeModule, NgForOf, NgIf, AsyncPipe, RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })

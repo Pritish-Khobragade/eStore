@@ -1,0 +1,31 @@
+<section class="cart-page">
+  <h2 class="cart-title">Your Cart</h2>
+
+  <ng-container *ngIf="cart$ | async as cart">
+    <p *ngIf="cart.products.length === 0" class="empty-cart">Your cart is empty.</p>
+
+    <article *ngFor="let item of cart.products" class="cart-item">
+      <img
+        class="cart-item-image"
+        [src]="item.product.product_img"
+        [alt]="item.product.product_name"
+      />
+
+      <div class="cart-item-details">
+        <h3 class="cart-item-name">{{ item.product.product_name }}</h3>
+        <app-ratings [score]="item.product.ratings"></app-ratings>
+
+        <div class="cart-item-actions">
+          <div class="quantity-control" [attr.aria-label]="'Quantity: ' + item.quantity">
+            <button type="button" aria-label="Decrease quantity" (click)="updateQuantity('-', item)">-</button>
+            <span>{{ item.quantity }}</span>
+            <button type="button" aria-label="Increase quantity" (click)="updateQuantity('+', item)">+</button>
+          </div>
+          <button type="button" class="remove-button" (click)="removeItem(item)">Remove Item</button>
+        </div>
+      </div>
+
+      <p class="cart-item-price">{{ item.amount | currency }}</p>
+    </article>
+  </ng-container>
+</section>
