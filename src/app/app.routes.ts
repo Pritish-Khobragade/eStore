@@ -24,6 +24,13 @@ export const routes: Routes = [
             (c) => c.CartComponent,
           ),
       },
+      {
+        path: 'signup',
+        loadComponent: () =>
+          import('./home/users/user-signup/user-signup.component').then(
+            (c) => c.UserSignupComponent,
+          ),
+      },
     ],
   },
   {
