@@ -1,14 +1,51 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
-import { loginToken, user } from '../../../types/user.type';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Observable, BehaviorSubject } from 'rxjs';
+import { loginToken, user, loggedInUser } from '../../../types/user.type';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UserService {
+  private isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
+  private loggedInUserInfo: BehaviorSubject<loggedInUser> = new BehaviorSubject(<loggedInUser>{});
+  private readonly isBrowser: boolean;
+  
+  constructor(private httpClient: HttpClient, @Inject(PLATFORM_ID) platformId: object) {
+    this.isBrowser = isPlatformBrowser(platformId);
+    if (!this.isBrowser) {
+      return;
+    }
 
-  constructor(private httpClient: HttpClient) { }
+    const token = localStorage.getItem('token');
+    const expiry = localStorage.getItem('expiry');
+    const firstName = localStorage.getItem('firstName');
+
+    if (token && expiry && new Date(expiry).getTime() > Date.now() && firstName && firstName !== 'undefined') {
+      this.isAuthenticated.next(true);
+      this.loggedInUserInfo.next({
+        firstName,
+        lastName: localStorage.getItem('lastname') ?? '',
+        address: localStorage.getItem('address') ?? '',
+        city: localStorage.getItem('city') ?? '',
+        state: localStorage.getItem('state') ?? '',
+        pin: localStorage.getItem('pin') ?? ''
+      });
+    }
+  }
+
+  get isUserAuthenticated(): boolean {
+    return this.isAuthenticated.value;
+  }
+
+  get isUserAuthenticated$(): Observable<boolean> {
+    return this.isAuthenticated.asObservable();
+  }
+
+  get loggedInUser$(): Observable<loggedInUser> {
+    return this.loggedInUserInfo.asObservable();
+  }
 
   createUser(user: user): Observable<{ message: string }> {
     const url = 'http://localhost:5001/users/signup';
@@ -21,8 +58,41 @@ export class UserService {
   }
 
   activateToken(token: loginToken): void {
-    localStorage.setItem('token', token.token);
-    localStorage.setItem('expiry', new Date(Date.now() + token.expiresInSeconds * 1000).toISOString());
+    const userInfo: loggedInUser = {
+      ...token.user,
+      firstName: token.user.firstName || token.user.fisrtName || ''
+    };
+
+    if (this.isBrowser) {
+      localStorage.setItem('token', token.token);
+      localStorage.setItem('expiry', new Date(Date.now() + token.expiresInSeconds * 1000).toISOString());
+      localStorage.setItem('firstName', userInfo.firstName);
+      localStorage.setItem('lastname', userInfo.lastName);
+      localStorage.setItem('address', userInfo.address);
+      localStorage.setItem('city', userInfo.city);
+      localStorage.setItem('state', userInfo.state);
+      localStorage.setItem('pin', userInfo.pin);
+    }
+
+    this.isAuthenticated.next(true);
+    this.loggedInUserInfo.next(userInfo);
+
+  }
+
+  logout(): void {
+    if (this.isBrowser) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('expiry');
+      localStorage.removeItem('firstName');
+      localStorage.removeItem('lastname');
+      localStorage.removeItem('address');
+      localStorage.removeItem('city');
+      localStorage.removeItem('state');
+      localStorage.removeItem('pin');
+    }
+
+    this.isAuthenticated.next(false);
+    this.loggedInUserInfo.next({} as loggedInUser);
   }
 }
 

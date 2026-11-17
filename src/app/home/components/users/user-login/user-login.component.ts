@@ -21,7 +21,7 @@ export class UserLoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private UserService: UserService,
-    private router: Router,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +45,7 @@ export class UserLoginComponent implements OnInit {
         this.UserService.activateToken(result);
         this.alertType = 0;
         this.alertMessage = 'Login successful';
-        this.router.navigateByUrl('/home/products');
+        this.router.navigateByUrl('/home/products', { replaceUrl: true });
       }, error: (error) => {
         this.alertType = 2;
         this.alertMessage = error.error.message;

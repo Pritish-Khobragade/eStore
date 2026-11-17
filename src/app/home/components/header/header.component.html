@@ -10,10 +10,29 @@
         <input #keyword class="form-control search-box" type="search" placeholder="Search..." aria-label="Search" />
         <button class="search-button" type="submit"><fa-icon [icon]="faMagnifyingGlass"></fa-icon></button>
     </form>
-    <div class="login-container p-0">
+    <div class="login-container p-0" *ngIf="!isUserAuthenticated">
         <fa-icon class="user-icon" [icon]="faUserCircle"></fa-icon>
-        <h5><a routerLink="login">Sign in / Join</a></h5>
+        <h5><a routerLink="/home/login">Sign in / Join</a></h5>
     </div>
+
+    <div class="user-container p-0" *ngIf="isUserAuthenticated">
+        <div class="dropdown user-dropdown">
+            <button class="user-dropdown-button"
+                type="button"
+                [attr.aria-expanded]="isUserMenuOpen"
+                aria-controls="user-dropdown-menu"
+                (click)="toggleUserMenu()">
+                <fa-icon class="user-icon" [icon]="faUserCircle"></fa-icon>
+                {{ userName }} <br>Logout
+            </button>
+            <ul *ngIf="isUserMenuOpen" id="user-dropdown-menu" class="dropdown-menu dropdown-menu-end user-dropdown-menu">
+                <li>
+                    <button class="dropdown-item logout-button" type="button" (click)="onLogout()">Logout</button>
+                </li>
+            </ul>
+        </div>
+    </div>
+
     <div class="cart-wishlist p-0 list-item">
         <button type="button" class="btn btn-dark position-relative" [routerLink]="['/home/cart'] " aria-label="Open cart">
             <fa-icon [icon]="faCartShopping"></fa-icon>
