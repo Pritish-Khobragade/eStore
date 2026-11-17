@@ -12,6 +12,7 @@ export const routes: Routes = [
       },
       {
         path: 'products/:id',
+        data: { hideCategorySidebar: true },
         loadComponent: () =>
           import('./home/components/productdetails/productdetails.component').then(
             (c) => c.ProductdetailsComponent,
@@ -19,6 +20,7 @@ export const routes: Routes = [
       },
       {
         path: 'cart',
+        data: { hideCategorySidebar: true },
         loadComponent: () =>
           import('./home/components/cart/cart/cart.component').then(
             (c) => c.CartComponent,
@@ -26,9 +28,18 @@ export const routes: Routes = [
       },
       {
         path: 'signup',
+        data: { hideCategorySidebar: true },
         loadComponent: () =>
           import('./home/users/user-signup/user-signup.component').then(
             (c) => c.UserSignupComponent,
+          ),
+      },
+      {
+        path: 'login',
+        data: { hideCategorySidebar: true },
+        loadComponent: () =>
+          import('./home/components/users/user-login/user-login.component').then(
+            (c) => c.UserLoginComponent,
           ),
       },
     ],

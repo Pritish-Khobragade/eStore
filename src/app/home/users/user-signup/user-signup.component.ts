@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validator
 import { NgClass, NgIf } from '@angular/common';
 import { user } from '../../types/user.type';
 import { matchPasswords } from './validators/match-passwords.validator';
-import { UserServiceService } from '../services/user-service.service';
+import { UserService } from '../../components/users/services/user-service.service';
 
 @Component({
   selector: 'app-user-signup',
@@ -19,7 +19,7 @@ export class UserSignupComponent implements OnInit {
   alertType: number = 0; // 0-success, 1-warning, 2-error
   constructor(
     private fb: FormBuilder,
-    private userService: UserServiceService
+    private userService: UserService
   ) { }
 
   ngOnInit(): void {

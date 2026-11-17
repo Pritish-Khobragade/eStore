@@ -8,3 +8,13 @@ export interface user{
     email: string;
     password: string;
 }
+
+export interface userlogin {
+    email: string;
+    password: string;
+}
+
+export interface loginToken{
+    token: string;
+    expiresInSeconds: number;
+}
