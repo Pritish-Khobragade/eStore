@@ -34,23 +34,50 @@
           </article>
         </div>
 
-        <aside class="cart-summary" aria-label="Order summary">
-          <h3>Summary</h3>
-          <div class="summary-row">
-            <span>Cart Total</span>
-            <span>{{ cart.totalAmount | currency }}</span>
-          </div>
-          <div class="summary-row">
-            <span>Shipping Charges</span>
-            <span>Free</span>
-          </div>
-          <hr />
-          <div class="summary-row summary-total">
-            <span>Total</span>
-            <span>{{ cart.totalAmount | currency }}</span>
-          </div>
-          <button type="button" class="checkout-button">Checkout</button>
-        </aside>
+        <form class="cart-sidebar" [formGroup]="deliveryForm" (ngSubmit)="onSubmit()" novalidate>
+          <section class="delivery-address" aria-labelledby="delivery-address-title">
+            <h3 id="delivery-address-title">Delivery Address</h3>
+
+            <div class="address-field">
+              <label for="deliveryName">Name</label>
+              <input id="deliveryName" type="text" formControlName="name" autocomplete="name" />
+            </div>
+            <div class="address-field">
+              <label for="deliveryAddress">Address</label>
+              <input id="deliveryAddress" type="text" formControlName="address" autocomplete="street-address" />
+            </div>
+            <div class="address-field">
+              <label for="deliveryCity">City</label>
+              <input id="deliveryCity" type="text" formControlName="city" autocomplete="address-level2" />
+            </div>
+            <div class="address-field">
+              <label for="deliveryState">State</label>
+              <input id="deliveryState" type="text" formControlName="state" autocomplete="address-level1" />
+            </div>
+            <div class="address-field">
+              <label for="deliveryPin">Pin</label>
+              <input id="deliveryPin" type="text" formControlName="pin" autocomplete="postal-code" />
+            </div>
+          </section>
+
+          <aside class="cart-summary" aria-label="Order summary">
+            <h3>Summary</h3>
+            <div class="summary-row">
+              <span>Cart Total</span>
+              <span>{{ cart.totalAmount | currency }}</span>
+            </div>
+            <div class="summary-row">
+              <span>Shipping Charges</span>
+              <span>Free</span>
+            </div>
+            <hr />
+            <div class="summary-row summary-total">
+              <span>Total</span>
+              <span>{{ cart.totalAmount | currency }}</span>
+            </div>
+            <button type="submit" class="checkout-button" [disabled]="deliveryForm.invalid">Checkout</button>
+          </aside>
+        </form>
       </div>
     </ng-template>
   </ng-container>
