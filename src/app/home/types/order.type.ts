@@ -15,3 +15,18 @@ export interface Order{
     userEmail: string;
     orderDetails: OrderItem[];
 }
+
+export interface OrderSummary {
+    orderId: number;
+    userName: string;
+    address: string;
+    city: string;
+    state: string;
+    pin: string;
+    total: number;
+    orderDate: string;
+}
+
+export interface OrderProduct extends OrderItem {
+    productName: string;
+}
