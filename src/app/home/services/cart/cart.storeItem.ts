@@ -122,4 +122,9 @@ export class CartStoreItem extends StoreItem<Cart> {
         sessionStorage.setItem('cart', JSON.stringify(this.cart));
     }
 
+    clearCart(): void {
+        this.updateCart([]);
+        this.saveCart();
+    }
+
 }

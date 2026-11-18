@@ -6,6 +6,10 @@
       <a class="continue-shopping" [routerLink]="['/home/products']">Continue Shopping</a>
     </div>
 
+    <div class="alert" [ngClass]="alertType === 0 ? 'alert-success' : 'alert-danger'" *ngIf="alertMessage !== ''" role="alert">
+      {{ alertMessage }}
+    </div>
+
     <ng-template #cartContents>
       <div class="cart-layout">
         <div class="cart-items">
@@ -75,7 +79,7 @@
               <span>Total</span>
               <span>{{ cart.totalAmount | currency }}</span>
             </div>
-            <button type="submit" class="checkout-button" [disabled]="deliveryForm.invalid">Checkout</button>
+            <button type="submit" class="checkout-button" [disabled]="deliveryForm.invalid || disableCheckout">Checkout</button>
           </aside>
         </form>
       </div>

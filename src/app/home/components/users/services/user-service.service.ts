@@ -12,6 +12,7 @@ export class UserService {
   private loggedInUserInfo: BehaviorSubject<loggedInUser> = new BehaviorSubject(<loggedInUser>{});
   private readonly isBrowser: boolean;
   private logoutTimer?: Subscription;
+  private authToken: string = '';
   
   constructor(private httpClient: HttpClient, @Inject(PLATFORM_ID) platformId: object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -25,6 +26,7 @@ export class UserService {
     const expiryTime = expiry ? Date.parse(expiry) : NaN;
 
     if (token && Number.isFinite(expiryTime) && expiryTime > Date.now() && firstName && firstName !== 'undefined') {
+      this.authToken = token;
       this.isAuthenticated.next(true);
       this.loggedInUserInfo.next({
         firstName,
@@ -32,7 +34,8 @@ export class UserService {
         address: localStorage.getItem('address') ?? '',
         city: localStorage.getItem('city') ?? '',
         state: localStorage.getItem('state') ?? '',
-        pin: localStorage.getItem('pin') ?? ''
+        pin: localStorage.getItem('pin') ?? '',
+        email: localStorage.getItem('email') ?? ''
       });
       this.scheduleAutoLogout(expiryTime);
     } else if (token && expiry && Number.isFinite(expiryTime) && expiryTime <= Date.now()) {
@@ -52,6 +55,10 @@ export class UserService {
     return this.loggedInUserInfo.asObservable();
   }
 
+  get token(): string {
+    return this.authToken;
+  }
+
   createUser(user: user): Observable<{ message: string }> {
     const url = 'http://localhost:5001/users/signup';
     return this.httpClient.post<{ message: string }>(url, user);
@@ -62,11 +69,12 @@ export class UserService {
     return this.httpClient.post<loginToken>(url, { email, password });
   }
 
-  activateToken(token: loginToken): void {
+  activateToken(token: loginToken,email: string): void {
     const expiryTime = Date.now() + token.expiresInSeconds * 1000;
     const userInfo: loggedInUser = {
       ...token.user,
-      firstName: token.user.firstName || token.user.fisrtName || ''
+      firstName: token.user.firstName || token.user.fisrtName || '',
+      email
     };
 
     if (this.isBrowser) {
@@ -78,11 +86,13 @@ export class UserService {
       localStorage.setItem('city', userInfo.city);
       localStorage.setItem('state', userInfo.state);
       localStorage.setItem('pin', userInfo.pin);
+      localStorage.setItem('email',email);
       this.scheduleAutoLogout(expiryTime);
     }
 
     this.isAuthenticated.next(true);
     this.loggedInUserInfo.next(userInfo);
+    this.authToken = token.token;
 
   }
 
@@ -104,10 +114,12 @@ export class UserService {
       localStorage.removeItem('city');
       localStorage.removeItem('state');
       localStorage.removeItem('pin');
+      localStorage.removeItem('email');
     }
 
     this.isAuthenticated.next(false);
     this.loggedInUserInfo.next({} as loggedInUser);
+    this.authToken = '';
   }
 }
 

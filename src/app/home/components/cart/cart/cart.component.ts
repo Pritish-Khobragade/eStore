@@ -1,18 +1,19 @@
-import { AsyncPipe, CurrencyPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, CurrencyPipe, NgForOf, NgIf, NgClass } from '@angular/common';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { RatingsComponent } from '../../../../shared/components/ratings/ratings.component';
 import { CartStoreItem } from './../../../services/cart/cart.storeItem';
-import { CartItem } from './../../../types/cart.type';
+import { CartItem, DeliveryAddress } from './../../../types/cart.type';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { UserService } from '../../users/services/user-service.service';
 import { loggedInUser } from '../../../types/user.type';
+import { OrderService } from '../../../services/order/order.service';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [AsyncPipe, CurrencyPipe, NgForOf, NgIf, RatingsComponent, RouterLink, ReactiveFormsModule],
+  imports: [AsyncPipe, CurrencyPipe, NgForOf, NgIf, RatingsComponent, RouterLink, ReactiveFormsModule, NgClass],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.scss'
 })
@@ -26,13 +27,18 @@ export class CartComponent implements OnInit, OnDestroy {
     address: '',
     city: '',
     state: '',
-    pin: ''
+    pin: '',
+    email: ''
   };
+  alertType: number = 0;
+  alertMessage: string = '';
+  disableCheckout: boolean = false;
 
   constructor(
     private cartStore: CartStoreItem,
     private fb: FormBuilder,
-    private userService: UserService
+    private userService: UserService,
+    private orderService: OrderService
   ) {
     this.cart$ = this.cartStore.cart$;
 
@@ -77,6 +83,39 @@ export class CartComponent implements OnInit, OnDestroy {
       this.deliveryForm.markAllAsTouched();
       return;
     }
+
+    if (!this.userService.isUserAuthenticated) {
+      this.alertType = 2;
+      this.alertMessage = 'Please log in to register your order.';
+      return;
+    }
+
+    const deliveryAddress: DeliveryAddress = {
+      userName: this.deliveryForm.get('name')?.value,
+      address: this.deliveryForm.get('address')?.value,
+      city: this.deliveryForm.get('city')?.value,
+      state: this.deliveryForm.get('state')?.value,
+      pin: this.deliveryForm.get('pin')?.value
+    };
+
+    this.subscriptions.add(
+      this.orderService.saveOrder(deliveryAddress, this.user.email).subscribe({
+        next: () => {
+          this.cartStore.clearCart();
+          this.alertType = 0;
+          this.alertMessage = 'Order registered successfully!';
+          this.disableCheckout = true;
+        },
+        error: (error) => {
+          this.alertType = 2;
+          if (error.error?.message === 'Authorization failed') {
+            this.alertMessage = 'Please log in to register your order.';
+          } else {
+            this.alertMessage = error.error?.message ?? 'Unable to register your order.';
+          }
+        }
+      })
+    );
   }
 
   updateQuantity(action: '+' | '-', cartItem: CartItem): void {

@@ -42,7 +42,7 @@ export class UserLoginComponent implements OnInit {
   onSubmit(): void {
     this.UserService.login(this.email?.value, this.password?.value).subscribe({
       next: (result: loginToken) => {
-        this.UserService.activateToken(result);
+        this.UserService.activateToken(result, this.email?.value);
         this.alertType = 0;
         this.alertMessage = 'Login successful';
         this.router.navigateByUrl('/home/products', { replaceUrl: true });
