@@ -27,6 +27,26 @@ export interface OrderSummary {
     orderDate: string;
 }
 
+export interface PastOrder{
+    userName: string;
+    address: string;
+    city: string;
+    state: string;
+    pin: string;
+    total: number;
+    orderDate: string;
+    orderId: number;
+}
+
+export interface PastOrderProduct{
+    productId: number;
+    productImage?: string;
+    qty: number;
+    price: number;
+    amount: number;
+    productName: string;
+}
+
 export interface OrderProduct extends OrderItem {
     productName: string;
 }

@@ -1,3 +1,4 @@
+import { PastOrder } from './../../types/order.type';
 import { CategoryStoreItem } from '../../services/category/categories.storeItem';
 import { Component, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
@@ -70,7 +71,12 @@ export class HeaderComponent implements OnDestroy {
   onLogout(): void {
     this.isUserMenuOpen = false;
     this.UserService.logout();
-    this.router.navigateByUrl('/home/login');
+    this.router.navigateByUrl('/home/products');
+  }
+
+  pastOrders(): void {
+    this.isUserMenuOpen = false;
+    this.router.navigate(['home/pastorders']);
   }
 
   ngOnDestroy(): void {

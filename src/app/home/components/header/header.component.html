@@ -2,39 +2,54 @@
     <div class="brand">
         <h1>eStore</h1>
     </div>
-    <form *ngIf="displaySearch" class="search-form" role="search" (submit)="onClickSearch($event, keyword.value, categoryOptions.value)">
-        <select #categoryOptions class="dropdown p-0 m-0" aria-label="Search category">
-            <option value="">All categories</option>
-            <option *ngFor="let category of categoryStore.topLevelCategories$ | async" [value]="category.id">{{ category.category }}</option>
+    <form *ngIf="displaySearch" class="search-form" role="search"
+        (submit)="onClickSearch($event, keyword.value, categoryOptions.value)">
+        <select #categoryOptions class="dropdown p-0 m-0"
+            aria-label="Search category">
+            <option value>All categories</option>
+            <option
+                *ngFor="let category of categoryStore.topLevelCategories$ | async"
+                [value]="category.id">{{ category.category }}</option>
         </select>
-        <input #keyword class="form-control search-box" type="search" placeholder="Search..." aria-label="Search" />
-        <button class="search-button" type="submit"><fa-icon [icon]="faMagnifyingGlass"></fa-icon></button>
+        <input #keyword class="form-control search-box" type="search"
+            placeholder="Search..." aria-label="Search" />
+        <button class="search-button" type="submit"><fa-icon
+                [icon]="faMagnifyingGlass"></fa-icon></button>
     </form>
-    <div class="login-container p-0" *ngIf="!isUserAuthenticated">
-        <fa-icon class="user-icon" [icon]="faUserCircle"></fa-icon>
-        <h5><a routerLink="/home/login">Sign in / Join</a></h5>
-    </div>
-
-    <div class="user-container p-0" *ngIf="isUserAuthenticated">
-        <div class="dropdown user-dropdown">
-            <button class="user-dropdown-button"
-                type="button"
-                [attr.aria-expanded]="isUserMenuOpen"
-                aria-controls="user-dropdown-menu"
-                (click)="toggleUserMenu()">
-                <fa-icon class="user-icon" [icon]="faUserCircle"></fa-icon>
-                {{ userName }} <br>Logout
-            </button>
-            <ul *ngIf="isUserMenuOpen" id="user-dropdown-menu" class="dropdown-menu dropdown-menu-end user-dropdown-menu">
-                <li>
-                    <button class="dropdown-item logout-button" type="button" (click)="onLogout()">Logout</button>
-                </li>
-            </ul>
+    <ng-container *ngIf="isUserAuthenticated; else signIn">
+        <div class="user-container p-0">
+            <div class="dropdown user-dropdown">
+                <button class="user-dropdown-button" type="button"
+                    [attr.aria-expanded]="isUserMenuOpen"
+                    aria-controls="user-dropdown-menu" (click)="toggleUserMenu()">
+                    <fa-icon class="user-icon" [icon]="faUserCircle"></fa-icon>
+                    <span>Hi {{ userName }}</span>
+                </button>
+                <ul *ngIf="isUserMenuOpen" id="user-dropdown-menu"
+                    class="dropdown-menu dropdown-menu-end user-dropdown-menu">
+                    <li>
+                        <button class="dropdown-item" type="button"
+                            (click)="pastOrders()">PastOrder</button>
+                    </li>
+                    <li>
+                        <button class="dropdown-item logout-button" type="button"
+                            (click)="onLogout()">Logout</button>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
+    </ng-container>
+
+    <ng-template #signIn>
+        <div class="login-container p-0">
+            <fa-icon class="user-icon" [icon]="faUserCircle"></fa-icon>
+            <h5><a routerLink="/home/login">Sign in / Join</a></h5>
+        </div>
+    </ng-template>
 
     <div class="cart-wishlist p-0 list-item">
-        <button type="button" class="btn btn-dark position-relative" [routerLink]="['/home/cart'] " aria-label="Open cart">
+        <button type="button" class="btn btn-dark position-relative"
+            [routerLink]="['/home/cart'] " aria-label="Open cart">
             <fa-icon [icon]="faCartShopping"></fa-icon>
             <ng-container *ngIf="cartStore.cart$ | async as cart">
                 <span *ngIf="cart.totalProducts > 0"

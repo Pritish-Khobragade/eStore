@@ -3,7 +3,7 @@ import { userlogin } from './../../../types/user.type';
 import { Component, OnInit } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgIf, NgClass } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { loginToken } from './../../../types/user.type';
 
 @Component({
@@ -21,7 +21,8 @@ export class UserLoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private UserService: UserService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
@@ -45,7 +46,8 @@ export class UserLoginComponent implements OnInit {
         this.UserService.activateToken(result, this.email?.value);
         this.alertType = 0;
         this.alertMessage = 'Login successful';
-        this.router.navigateByUrl('/home/products', { replaceUrl: true });
+        const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+        this.router.navigateByUrl(returnUrl || '/home/products', { replaceUrl: true });
       }, error: (error) => {
         this.alertType = 2;
         this.alertMessage = error.error.message;

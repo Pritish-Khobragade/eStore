@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { CartStoreItem } from '../cart/cart.storeItem';
-import { Order, OrderItem, OrderProduct, OrderSummary } from '../../types/order.type';
+import { Order, OrderItem, OrderProduct, OrderSummary, PastOrder, PastOrderProduct } from '../../types/order.type';
 import { DeliveryAddress } from '../../types/cart.type';
 import { UserService } from '../../components/users/services/user-service.service';
 
@@ -58,4 +58,11 @@ export class OrderService {
     });
   }
 
+  getOrders(_userEmail: string): Observable<PastOrder[]> {
+    return this.getAllOrders();
+  }
+
+  getOrderProduct(orderId: string | number): Observable<PastOrderProduct[]> {
+    return this.getOrderProducts(Number(orderId));
+  }
 }

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './home/services/authguard';
 
 export const routes: Routes = [
   {
@@ -41,6 +42,15 @@ export const routes: Routes = [
           import('./home/components/users/user-login/user-login.component').then(
             (c) => c.UserLoginComponent,
           ),
+      },
+       {
+        path: 'pastorders',
+        data: { hideCategorySidebar: true },
+         canActivate: [authGuard],
+        loadComponent: () =>
+           import('./home/components/pastorders/pastorders.component').then(
+             (c) => c.PastordersComponent,
+           )
       },
     ],
   },
