@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription, timer } from 'rxjs';
 import { loginToken, user, loggedInUser } from '../../../types/user.type';
 
 @Injectable({
@@ -11,6 +11,7 @@ export class UserService {
   private isAuthenticated: BehaviorSubject<boolean> = new BehaviorSubject(false);
   private loggedInUserInfo: BehaviorSubject<loggedInUser> = new BehaviorSubject(<loggedInUser>{});
   private readonly isBrowser: boolean;
+  private logoutTimer?: Subscription;
   
   constructor(private httpClient: HttpClient, @Inject(PLATFORM_ID) platformId: object) {
     this.isBrowser = isPlatformBrowser(platformId);
@@ -21,8 +22,9 @@ export class UserService {
     const token = localStorage.getItem('token');
     const expiry = localStorage.getItem('expiry');
     const firstName = localStorage.getItem('firstName');
+    const expiryTime = expiry ? Date.parse(expiry) : NaN;
 
-    if (token && expiry && new Date(expiry).getTime() > Date.now() && firstName && firstName !== 'undefined') {
+    if (token && Number.isFinite(expiryTime) && expiryTime > Date.now() && firstName && firstName !== 'undefined') {
       this.isAuthenticated.next(true);
       this.loggedInUserInfo.next({
         firstName,
@@ -32,6 +34,9 @@ export class UserService {
         state: localStorage.getItem('state') ?? '',
         pin: localStorage.getItem('pin') ?? ''
       });
+      this.scheduleAutoLogout(expiryTime);
+    } else if (token && expiry && Number.isFinite(expiryTime) && expiryTime <= Date.now()) {
+      this.logout();
     }
   }
 
@@ -58,6 +63,7 @@ export class UserService {
   }
 
   activateToken(token: loginToken): void {
+    const expiryTime = Date.now() + token.expiresInSeconds * 1000;
     const userInfo: loggedInUser = {
       ...token.user,
       firstName: token.user.firstName || token.user.fisrtName || ''
@@ -65,13 +71,14 @@ export class UserService {
 
     if (this.isBrowser) {
       localStorage.setItem('token', token.token);
-      localStorage.setItem('expiry', new Date(Date.now() + token.expiresInSeconds * 1000).toISOString());
+      localStorage.setItem('expiry', new Date(expiryTime).toISOString());
       localStorage.setItem('firstName', userInfo.firstName);
       localStorage.setItem('lastname', userInfo.lastName);
       localStorage.setItem('address', userInfo.address);
       localStorage.setItem('city', userInfo.city);
       localStorage.setItem('state', userInfo.state);
       localStorage.setItem('pin', userInfo.pin);
+      this.scheduleAutoLogout(expiryTime);
     }
 
     this.isAuthenticated.next(true);
@@ -79,7 +86,15 @@ export class UserService {
 
   }
 
+  private scheduleAutoLogout(expiryTime: number): void {
+    this.logoutTimer?.unsubscribe();
+    this.logoutTimer = timer(Math.max(0, expiryTime - Date.now())).subscribe(() => this.logout());
+  }
+
   logout(): void {
+    this.logoutTimer?.unsubscribe();
+    this.logoutTimer = undefined;
+
     if (this.isBrowser) {
       localStorage.removeItem('token');
       localStorage.removeItem('expiry');
