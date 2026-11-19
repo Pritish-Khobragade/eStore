@@ -3,14 +3,7 @@
         <h1>eStore</h1>
     </div>
     <form *ngIf="displaySearch" class="search-form" role="search"
-        (submit)="onClickSearch($event, keyword.value, categoryOptions.value)">
-        <select #categoryOptions class="dropdown p-0 m-0"
-            aria-label="Search category">
-            <option value>All categories</option>
-            <option
-                *ngFor="let category of categoryStore.topLevelCategories$ | async"
-                [value]="category.id">{{ category.category }}</option>
-        </select>
+        (submit)="onClickSearch($event, keyword.value)">
         <input #keyword class="form-control search-box" type="search"
             placeholder="Search..." aria-label="Search" />
         <button class="search-button" type="submit"><fa-icon

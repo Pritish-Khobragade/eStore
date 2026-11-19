@@ -1,5 +1,4 @@
 import { PastOrder } from './../../types/order.type';
-import { CategoryStoreItem } from '../../services/category/categories.storeItem';
 import { Component, EventEmitter, Output, OnDestroy } from '@angular/core';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import {
@@ -7,7 +6,7 @@ import {
   faMagnifyingGlass,
   faUserCircle
 } from '@fortawesome/free-solid-svg-icons';
-import { AsyncPipe, NgForOf, NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { SearchKeywordType } from '../../types/searchKeywordtype';
 import { NavigationEnd, Router, RouterLink } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -17,7 +16,7 @@ import { UserService } from '../users/services/user-service.service';
 @Component({
   selector: 'app-header',
   standalone: true,
-  imports: [FontAwesomeModule, NgForOf, NgIf, AsyncPipe, RouterLink],
+  imports: [FontAwesomeModule, NgIf, AsyncPipe, RouterLink],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss'
 })
@@ -35,7 +34,7 @@ export class HeaderComponent implements OnDestroy {
   isUserMenuOpen: boolean = false;
   userName: string = '';
 
-  constructor(public categoryStore: CategoryStoreItem, private router: Router, public cartStore: CartStoreItem, public UserService: UserService) {
+  constructor(private router: Router, public cartStore: CartStoreItem, public UserService: UserService) {
     this.displaySearch = router.url === '/home/products';
     router.events.pipe(
       filter((event): event is NavigationEnd => event instanceof NavigationEnd)
@@ -55,12 +54,11 @@ export class HeaderComponent implements OnDestroy {
 
   }
 
-  onClickSearch(event: SubmitEvent, keyword: string, categoryId: string): void {
+  onClickSearch(event: SubmitEvent, keyword: string): void {
     event.preventDefault();
-    const parsedCategoryId = Number(categoryId);
     this.searchClicked.emit({
       keyword: keyword.trim(),
-      categoryId: categoryId && Number.isInteger(parsedCategoryId) ? parsedCategoryId : null
+      categoryId: null
     });
   }
 
